@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, ChangeEvent, FormEvent } from 'react';
-import { Container, Typography, Box, TextField, Button, Card, CardContent, CardActions, IconButton } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Card, CardContent, CardActions, IconButton, Snackbar, Alert } from '@mui/material';
 import { Edit, Delete, Save, Cancel } from '@mui/icons-material';
+import Link from 'next/link';
 
 interface BlogPost {
   title: string;
@@ -16,6 +17,7 @@ const BlogPage = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState<string>('');
   const [editContent, setEditContent] = useState<string>('');
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -31,6 +33,7 @@ const BlogPage = () => {
     setPosts([...posts, newPost]);
     setTitle('');
     setContent('');
+    setSnackbarOpen(true);
   };
 
   const handleEditTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +71,10 @@ const BlogPage = () => {
   const handleDelete = (index: number) => {
     const updatedPosts = posts.filter((_, i) => i !== index);
     setPosts(updatedPosts);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -163,6 +170,23 @@ const BlogPage = () => {
           </Card>
         ))}
       </Box>
+
+      <Link href="/">
+        <Button variant="text" color="secondary" fullWidth sx={{ mt: 2 }}>
+          Logout
+        </Button>
+      </Link>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          Blog post added successfully!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
