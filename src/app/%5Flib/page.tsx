@@ -4,4 +4,4 @@ export default function _lib(){
 
 //folder kai naam se pehle _ (underscore) lagane se wo route private banjati -> route that can not be accessed
 // i.e: _lib
-// using %5F instead of underscore will make _lib accessible
+// using %5F instead of underscore will make _lib accessible 
