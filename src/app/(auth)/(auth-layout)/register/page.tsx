@@ -1,10 +1,13 @@
-export default function Register(){
-    return <h1>Register</h1>
-}
-/*    
-        
-         (auth) rmeoves /auth  from the url, so:
-         /auth/register is incorrect
-         /register is correct
+import RegisterPage from "@/pages/registerPage"
 
-*/
+export const metadata = {
+    title: "Register",
+    "description": "Reguster Page for users"
+}
+export default function Register(){
+    return (
+        <div>
+            <RegisterPage/>
+        </div>
+    )
+}

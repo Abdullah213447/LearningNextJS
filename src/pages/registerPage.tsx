@@ -2,13 +2,14 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Container, Typography, Button, Box, TextField, Card, CardContent, IconButton, InputAdornment, Snackbar, Alert } from '@mui/material';
-import { Visibility, VisibilityOff, Lock, Email } from '@mui/icons-material';
+import { Container, Typography, Button, Box, TextField, Card, CardContent, Snackbar, Alert, InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff, Lock, Email, Person } from '@mui/icons-material';
 import Link from 'next/link';
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
@@ -23,6 +24,10 @@ const LoginPage = () => {
     setPassword(e.target.value);
   };
 
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -31,27 +36,23 @@ const LoginPage = () => {
     event.preventDefault();
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => { 
     e.preventDefault();
-    // Get existing users from local storage
-    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    // Mock register logic here, replace with actual API call
+    if (email && password && username) {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const newUser = { email, password, username };
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
 
-    // Check if the email and password match any registered user
-    const user = existingUsers.find(
-      (user: { email: string; password: string }) =>
-        user.email === email && user.password === password
-    );
-
-    if (user) {
-      // Show success message and redirect to blog page
-      setSnackbarMessage('Login successful! Redirecting to blog...');
+      setSnackbarMessage('Registration successful! Redirecting to login...');
       setSnackbarOpen(true);
       setTimeout(() => {
-        router.push('/blog');
+        router.push('/login');
       }, 2000); // Redirect after 2 seconds
     } else {
-      // Handle login failure (e.g., show an error message)
-      setError('Invalid email or password');
+      // Handle registration failure (e.g., show an error message)
+      setError('All fields are required');
     }
   };
 
@@ -64,12 +65,29 @@ const LoginPage = () => {
       <Card sx={{ boxShadow: 3 }}>
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <Lock sx={{ fontSize: 40, color: 'primary.main' }} />
+            <Person sx={{ fontSize: 40, color: 'primary.main' }} />
           </Box>
           <Typography variant="h4" align="center" gutterBottom>
-            Login
+            Register
           </Typography>
           <form onSubmit={handleSubmit}>
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                label="Username"
+                fullWidth
+                value={username}
+                onChange={handleUsernameChange}
+                required
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Person />
+                    </InputAdornment>
+                  ),
+                }}
+                error={!!error}
+              />
+            </Box>
             <Box sx={{ mb: 2 }}>
               <TextField
                 label="Email"
@@ -124,12 +142,12 @@ const LoginPage = () => {
               </Typography>
             )}
             <Button type="submit" variant="contained" color="primary" fullWidth>
-              Login
+              Register
             </Button>
           </form>
-          <Link href="/" passHref>
+          <Link href="/login" passHref>
             <Button variant="text" color="secondary" fullWidth sx={{ mt: 2 }}>
-              Back Home
+              Already have an account? Login
             </Button>
           </Link>
         </CardContent>
@@ -148,4 +166,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

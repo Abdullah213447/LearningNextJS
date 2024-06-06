@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, ChangeEvent, FormEvent } from 'react';
-import { Container, Typography, Box, TextField, Button, Card, CardContent, CardActions, IconButton, Snackbar, Alert } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Card, CardContent, CardActions, IconButton, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { Edit, Delete, Save, Cancel } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -18,6 +18,10 @@ const BlogPage = () => {
   const [editTitle, setEditTitle] = useState<string>('');
   const [editContent, setEditContent] = useState<string>('');
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState<boolean>(false);
+  const [updateSnackbarOpen, setUpdateSnackbarOpen] = useState<boolean>(false);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -65,16 +69,40 @@ const BlogPage = () => {
       setEditIndex(null);
       setEditTitle('');
       setEditContent('');
+      setUpdateSnackbarOpen(true);
     }
   };
 
   const handleDelete = (index: number) => {
-    const updatedPosts = posts.filter((_, i) => i !== index);
-    setPosts(updatedPosts);
+    setDeleteIndex(index);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (deleteIndex !== null) {
+      const updatedPosts = posts.filter((_, i) => i !== deleteIndex);
+      setPosts(updatedPosts);
+      setDeleteIndex(null);
+      setDeleteDialogOpen(false);
+      setDeleteSnackbarOpen(true);
+    }
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleDeleteSnackbarClose = () => {
+    setDeleteSnackbarOpen(false);
+  };
+
+  const handleUpdateSnackbarClose = () => {
+    setUpdateSnackbarOpen(false);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setDeleteIndex(null);
   };
 
   return (
@@ -187,6 +215,52 @@ const BlogPage = () => {
           Blog post added successfully!
         </Alert>
       </Snackbar>
+
+      <Snackbar
+        open={deleteSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleDeleteSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleDeleteSnackbarClose} severity="error" sx={{ width: '100%' }}>
+          Blog deleted successfully!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={updateSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleUpdateSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleUpdateSnackbarClose} severity="info" sx={{ width: '100%' }}>
+          Blog updated successfully!
+        </Alert>
+      </Snackbar>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          Confirm Delete
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete this blog post?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmDelete} color="secondary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

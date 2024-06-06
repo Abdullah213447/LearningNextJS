@@ -1,6 +1,7 @@
 'use client';
 
 import { Container, Typography, Button, Box, AppBar, Toolbar } from '@mui/material';
+import { blue } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Link from 'next/link';
 
@@ -48,7 +49,7 @@ const HeroPage = () => {
               My Blog
             </Typography>
             <Link href="/login" passHref>
-              <Button color="inherit">Login</Button>
+              <Button style={{ color: 'blue' }}>Login</Button>
             </Link>
           </Toolbar>
         </AppBar>
@@ -67,9 +68,7 @@ const HeroPage = () => {
           <Typography variant="h5" align="center" paragraph>
             Discover the latest news and articles
           </Typography>
-          <Button variant="contained" color="secondary" size="large">
-            Get Started
-          </Button>
+          
         </Container>
       </Box>
     </ThemeProvider>
